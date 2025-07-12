@@ -81,7 +81,8 @@ const SignUp = () => {
         justifyContent: 'center',
         alignItems: "center",
         flexDirection: "column",
-        color:'text.secondary'
+        color:'text.secondary',
+        userSelect:'none'
 
       }}
     >

@@ -27,6 +27,7 @@ const LogIn = () => {
         alignItems: 'center',
         flexDirection: 'column',
         color: 'text.secondary',
+                userSelect:'none'
       }}
     >
       <Typography variant="h5" sx={{ marginY: 3, fontWeight: 'bold' }}>

@@ -57,17 +57,18 @@ const Notes = () => {
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 2, px: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 2, px: 1,mt:5 ,mb:8}}>
             <Box
                 sx={{
                     position: 'sticky',
-                    top: 0,
+                    top: 45,
                     backgroundColor: '#fff',
                     zIndex: 10,
                     pt: 2,
                     height: 65,
                     width: '100%',
                     borderBottom: '1px solid #eee',
+                    
                 }}
             >
                 <TextField
