@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Weekly Team Sync-Up Meeting Notes - July 10",
+    "content": "Today’s meeting covered the upcoming product launch timeline, potential blockers in QA, and a new initiative for improving onboarding documentation. Action items include scheduling stakeholder review and finalizing sprint goals by Friday.",
+    "createdAt": "2025-07-10T10:30:00Z"
+  },
+  {
+    "title": "Comprehensive Grocery & Kitchen Refill List",
+    "content": "Items to buy this weekend: Organic Milk (2L), Brown Bread, Free-range Eggs (12), Arabica Coffee Beans, Green Apples (1kg), Chicken Breast, Whole Wheat Flour, Extra Virgin Olive Oil, and Sea Salt.",
+    "createdAt": "2025-07-09T08:15:00Z"
+  },
+  {
+    "title": "Science Fiction Novel Ideas and World Building",
+    "content": "1. The Last Algorithm: A dystopian world governed by an ancient AI.\n2. Ghosts in the Machine: Consciousness uploaded into a neural mesh fails to stay human.\n3. Memory Crash: People lose their memories every 48 hours unless they pay for a subscription.",
+    "createdAt": "2025-07-08T14:22:00Z"
+  },
+  {
+    "title": "Full Body Workout Plan for Week One",
+    "content": "Monday - Chest & Triceps: Bench Press, Dips, Pushups\nTuesday - Back & Biceps: Deadlifts, Rows, Pullups\nWednesday - Rest\nThursday - Legs: Squats, Lunges, Calf Raises\nFriday - Core + Cardio\nSaturday - Active Recovery\nSunday - Rest",
+    "createdAt": "2025-07-07T17:00:00Z"
+  },
+  {
+    "title": "Classic Buttermilk Pancake Recipe with Toppings",
+    "content": "Ingredients: 2 cups flour, 2 eggs, 1.5 cups buttermilk, 1 tbsp sugar, 1 tsp baking powder, ½ tsp salt. Whisk ingredients and cook each pancake for 2 mins per side on medium heat. Top with fresh fruits, maple syrup, or whipped cream.",
+    "createdAt": "2025-07-06T09:45:00Z"
+  },
+  {
+    "title": "SkyNote Feature Brainstorming and Enhancement List",
+    "content": "Ideas: 1. Add support for Markdown in notes. 2. Implement dark mode and automatic theme switch. 3. Allow sharing of individual notes with link-based access. 4. Add categories/tags. 5. Backup notes to Google Drive integration. 6. Password-protect specific notes.",
+    "createdAt": "2025-07-05T12:00:00Z"
+  },
+  {
+    "title": "Essential Travel Packing Checklist - Bali Trip",
+    "content": "Passport, Visa Printout, Chargers (Phone/Laptop), Camera, Travel Insurance, Light Cotton Clothes, Sunscreen SPF50, Toiletries, Hiking Shoes, Sunglasses, Local Currency, Power Adapter, Booking Confirmations (printed and digital).",
+    "createdAt": "2025-07-04T16:35:00Z"
+  },
+  {
+    "title": "Inspirational Quote of the Day - Productivity Focus",
+    "content": "“Success is not the result of spontaneous combustion. You must set yourself on fire.” – Arnold H. Glasow. Reminder: Take small, consistent actions toward your goals every single day, no matter how minor they seem.",
+    "createdAt": "2025-07-03T11:00:00Z"
+  },
+  {
+    "title": "Frontend Development Sprint - Tasks & Bugs",
+    "content": "To do: Fix mobile navbar collapse issue, implement debounce in search input, integrate loading spinner for async calls, test responsiveness on iPad and Galaxy Fold, clean up unused components, and finalize accessibility fixes.",
+    "createdAt": "2025-07-02T18:20:00Z"
+  },
+  {
+    "title": "Daily Journal - Reflections and Highlights",
+    "content": "Today was extremely productive. Finalized the REST API for notes, set up database backups, helped a teammate debug token expiration issues, and reviewed two PRs. Also started writing unit tests for encryption logic. Feeling satisfied.",
+    "createdAt": "2025-07-01T20:10:00Z"
+  }
+]
