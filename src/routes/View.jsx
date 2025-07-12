@@ -27,7 +27,7 @@ const View = () => {
 
 
     return (
-        <Box sx={{ display: 'flex', margin: 2, flexDirection: "column", gap: 3 }}>
+        <Box sx={{ display: 'flex', margin: 2, flexDirection: "column", gap: 3,mt:8 }}>
             <Paper sx={{display:"flex",alignItems:"center"}}>
                 <Typography gutterBottom variant="h6" component="div" sx={{
                     color: 'text.secondary',paddingX:2

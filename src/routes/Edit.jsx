@@ -23,7 +23,7 @@ const Edit = () => {
         return `${dayName} ${day} ${monthName} ${year} ${hours}:${minutes}:${seconds} ${ampm}`;
     }
     return (
-        <Box sx={{ display: 'flex', margin: 2, flexDirection: "column", gap: 3 }}>
+        <Box sx={{ display: 'flex', margin: 2, flexDirection: "column", gap: 3 ,mt:8}}>
             <Paper>
                 <Typography gutterBottom variant="h6" contentEditable={true} component="div" sx={{
                     color: 'text.secondary',

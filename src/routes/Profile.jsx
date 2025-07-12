@@ -66,14 +66,14 @@ export const Profile = () => {
         {/* Notes Count */}
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }} justifyContent="start">
           <NotesIcon color="primary" />
-          <Typography color="primary"  fontWeight="bold" variant="subtitle2">Notes</Typography>
+          <Typography color="primary"  fontWeight="bold" variant="subtitle2">TOTAL NOTES</Typography>
         <Typography variant="body1" color="textSecondary" gutterBottom>{user.totalNotes}</Typography>
         </Stack>
 
         {/* Joined On */}
         <Stack direction="row" spacing={1} alignItems="center"  sx={{ mt: 1 }} justifyContent="start">
           <CalendarTodayIcon color="primary" />
-          <Typography color="primary"  fontWeight="bold" variant="subtitle2">Joined On</Typography>
+          <Typography color="primary"  fontWeight="bold" variant="subtitle2">JOINED ON</Typography>
         <Typography variant="body1" color="textSecondary" gutterBottom>{user.joinedOn}</Typography>
         </Stack>
 
