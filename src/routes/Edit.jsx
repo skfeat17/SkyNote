@@ -88,7 +88,7 @@ const Edit = () => {
           variant="body1"
           component="div"
           contentEditable={true}
-          sx={{ color: 'text.secondary', padding: 2 }}
+          sx={{ color: 'text.secondary', padding: 2,  whiteSpace: 'pre-line' }}
         >
           {data.content}
         </Typography>
