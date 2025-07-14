@@ -1,11 +1,23 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Container, Box, Typography, Button, Stack } from '@mui/material';
 import logo from '../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate()
+ useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if(token) navigate('/home')
+ },[])
+ 
+
+
+
+
+
+
   return (
+
     <Container maxWidth="sm">
       <Box
         sx={{

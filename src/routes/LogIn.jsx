@@ -1,33 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Paper, Typography, TextField, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const LogIn = () => {
-  const navigate = useNavigate(); // ✅ INITIALIZE IT
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log('✅ Form Data:', data);
-    alert('Login successful! Check the console for submitted data.');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      const res = await fetch('https://skynote-api.vercel.app/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (res.status === 200) {
+        setToast({
+          open: true,
+          message: 'Login successful!',
+          severity: 'success',
+        });
+
+        // Store token in localStorage (optional)
+        localStorage.setItem('jwt', result.userToken);
+
+        setTimeout(() => navigate('/home'), 1000);
+      } else {
+        setToast({
+          open: true,
+          message: result.message || 'Login failed',
+          severity: 'error',
+        });
+      }
+    } catch (err) {
+      setToast({
+        open: true,
+        message: 'Network error',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Box
       sx={{
         display: 'flex',
-        height: '80vh',
+        height: '100vh',
         width: '100vw',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         color: 'text.secondary',
-                userSelect:'none'
+        userSelect: 'none',
       }}
     >
       <Typography variant="h5" sx={{ marginY: 3, fontWeight: 'bold' }}>
@@ -45,7 +94,6 @@ const LogIn = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          color: 'text.secondary',
         }}
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -89,26 +137,48 @@ const LogIn = () => {
         />
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Login
+          <Button type="submit" fullWidth variant="contained" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
           </Button>
         </Box>
       </Paper>
 
-      {/* ✅ Sign-up link with proper navigation */}
-      <Typography sx={{ marginTop: 2 ,fontSize:'0.92rem',textAlign:'center'}}>
+      <Typography
+        sx={{
+          marginTop: 2,
+          fontSize: '0.92rem',
+          textAlign: 'center',
+        }}
+      >
         Don&apos;t have an account?{' '}
         <span
           onClick={() => navigate('/signup')}
           style={{
             cursor: 'pointer',
             color: '#1976d2',
-            userSelect: 'none'
+            userSelect: 'none',
           }}
         >
           Sign Up
         </span>
       </Typography>
+
+      {/* Toast */}
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={4000}
+        onClose={() => setToast({ ...toast, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setToast({ ...toast, open: false })}
+          severity={toast.severity}
+          variant='filled'
+          sx={{ width: '100%',mt:3 }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

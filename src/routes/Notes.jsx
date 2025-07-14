@@ -1,180 +1,265 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Card, CardActions, Typography, Button, CardContent, Stack, Tooltip } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Card,
+  CardActions,
+  Typography,
+  Button,
+  CardContent,
+  Stack,
+  Tooltip,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Snackbar,
+  Alert,
+  Skeleton
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import api from './data.json';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const Notes = () => {
-    const [searchText, setSearchText] = useState('');
-    const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [filteredNotes, setFilteredNotes] = useState(api);
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleView = (note) => {
-        navigate("/view", { state: note });
-    };
+  const fetchNotes = async () => {
+    setLoading(true);
+    const token = localStorage.getItem('jwt');
 
-    const handleEdit = (note) => {
-        navigate("/edit", { state: note });
-    };
+    try {
+      const res = await fetch('https://skynote-api.vercel.app/note/get', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    // Debounce logic: wait 300ms before updating search
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearch(searchText);
-        }, 300);
+      const data = await res.json();
 
-        return () => clearTimeout(handler); // cleanup on unmount or next input
-    }, [searchText]);
-
-    // Update filtered notes only when debouncedSearch changes
-    useEffect(() => {
-        setFilteredNotes(
-            api.filter(note =>
-                note.title.toLowerCase().includes(debouncedSearch.toLowerCase())
-            )
-        );
-    }, [debouncedSearch]);
-
-    function formatDateToCustom(input) {
-        const date = new Date(input);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-
-        let hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-
-        hours = hours % 12 || 12;
-        const hourStr = String(hours).padStart(2, '0');
-
-        return `${day}-${month}-${year} ${hourStr}:${minutes}:${seconds} ${ampm}`;
+      if (res.ok && data.success) {
+        setNotes(data.notes);
+        setFilteredNotes(data.notes);
+      } else {
+        throw new Error(data.message || 'Failed to fetch notes');
+      }
+    } catch (err) {
+      setSnackbar({ open: true, message: err.message, severity: 'error' });
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 2, px: 1,mt:5 ,mb:8}}>
-            <Box
-                sx={{
-                    position: 'sticky',
-                    top: 45,
-                    backgroundColor: '#fff',
-                    zIndex: 10,
-                    pt: 2,
-                    height: 65,
-                    width: '100%',
-                    borderBottom: '1px solid #eee',
-                    
-                }}
-            >
-                <TextField
-                    label="Search Note"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                />
-            </Box>
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mt: 1, p: 1 }}>
-                
-            {filteredNotes.length === 0 && (
-  <Typography variant="body2" sx={{
-    color: 'text.secondary',
-mt:30
-  }}>
-    No Notes Exist
-  </Typography>
-)}
-                
-                {filteredNotes.map((data) => (
-                    <Card
-                        key={data.id}
-                        sx={{
-                            width: "100%",
-                            height: 180,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            overflow: 'hidden',
-                            boxShadow: 1,
-                            borderRadius: 1,
-                        }}
-                    >
-                        <CardContent>
-                            <Typography gutterBottom variant="h6" component="div" sx={{
-                                color: 'text.secondary',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>
-                                {data.title}
-                            </Typography>
-                            <Typography variant="body2" sx={{
-                                color: 'text.secondary',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>
-                                {data.content}
-                            </Typography>
-                        </CardContent>
-                        <CardActions sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center", px: 2 }}>
-                            <div className="time">
-                                {formatDateToCustom(data.createdAt)}
-                            </div>
-                            <Stack direction="row" spacing={1}>
-                                <Tooltip title="View">
-                                    <Button
-                                        size="small"
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleView(data)}
-                                        sx={{ minWidth: '10px', padding: '6px' }}
-                                    >
-                                        <VisibilityIcon fontSize="small" />
-                                    </Button>
-                                </Tooltip>
+  // Debounce logic
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchText);
+    }, 300);
 
-                                <Tooltip title="Edit">
-                                    <Button
-                                        size="small"
-                                        variant="contained"
-                                        color="info"
-                                        onClick={() => handleEdit(data)}
-                                        sx={{ minWidth: '10px', padding: '6px' }}
-                                    >
-                                        <EditIcon fontSize="small" />
-                                    </Button>
-                                </Tooltip>
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
-                                <Tooltip title="Delete">
-                                    <Button
-                                        size="small"
-                                        variant="contained"
-                                        color="error"
-                                        onClick={() => console.log('Delete', data)}
-                                        sx={{ minWidth: '10px', padding: '6px' }}
-                                    >
-                                        <DeleteIcon fontSize="small" />
-                                    </Button>
-                                </Tooltip>
-                            </Stack>
-                        </CardActions>
-                    </Card>
-                ))}
-            </Box>
-        </Box>
+  useEffect(() => {
+    setFilteredNotes(
+      notes.filter(note =>
+        note.title.toLowerCase().includes(debouncedSearch.toLowerCase())
+      )
     );
+  }, [debouncedSearch, notes]);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+
+    setDeleting(true);
+    const token = localStorage.getItem('jwt');
+
+    try {
+      const res = await fetch('https://skynote-api.vercel.app/note/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: deleteId }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setSnackbar({ open: true, message: 'Note deleted successfully!', severity: 'success' });
+        setDeleteId(null);
+        fetchNotes(); // Refresh notes
+      } else {
+        throw new Error(data.message || 'Failed to delete note');
+      }
+    } catch (err) {
+      setSnackbar({ open: true, message: err.message, severity: 'error' });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  function formatDateToCustom(input) {
+    const date = new Date(input);
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthName = date.toLocaleString('en-US', { month: 'short' }); // e.g., Jul
+    const year = date.getFullYear();
+  
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    hours = hours % 12 || 12;
+  
+    return `${day} ${monthName} ${year}, ${hours}:${minutes} ${ampm}`;
+  }
+  
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, mb: 8, px: 1 }}>
+      <Box sx={{ position: 'sticky', top: 45, bgcolor: '#fff', zIndex: 10, pt: 2, width: '100%' }}>
+        {loading ? (
+          <Skeleton height={40} />
+        ) : (
+          <TextField
+            label="Search Note"
+            variant="outlined"
+            size="small"
+            fullWidth
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        )}
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 2, width: '100%' }}>
+        {loading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} height={180} variant="rectangular" />
+            ))
+          : filteredNotes.length === 0 ? (
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 30, textAlign: 'center' }}>
+                No Notes Exist
+              </Typography>
+            ) : (
+              filteredNotes.map((data) => (
+                <Card key={data.id} sx={{ width: '100%', minHeight: 180 }}>
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: 'text.secondary',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        WebkitLineClamp: 1,
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                      }}
+                    >
+                      {data.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        WebkitLineClamp: 2,
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        whiteSpace: 'pre-line'
+                      }}
+                    >
+                      {data.content}
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'space-between', px: 2 }}>
+                    <div className="time">{formatDateToCustom(data.createdAt)}</div>
+                    <Stack direction="row" spacing={1}>
+                  <Tooltip title="View">
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                                    onClick={() => navigate('/view', { state: data })}
+                      sx={{ minWidth: 10, p: 0.8 }}
+                    >
+                      <VisibilityIcon fontSize="small" />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Edit">
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="info"
+                     onClick={() => navigate('/edit', { state: data })}
+                      sx={{ minWidth: 10, p: 0.8 }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="error"
+                            onClick={() => setDeleteId(data.id)}
+                      sx={{ minWidth: 10, p: 0.8 }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </Button>
+                  </Tooltip>
+                </Stack>
+                  </CardActions>
+                </Card>
+              ))
+            )}
+      </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteId} onClose={() => !deleting && setDeleteId(null)}>
+        <DialogTitle>Are you sure you want to delete this note?</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setDeleteId(null)} disabled={deleting}>
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="error" disabled={deleting} variant="contained">
+            {deleting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for toast messages */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert  sx={{mt:7}}  
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
 };
 
 export default Notes;

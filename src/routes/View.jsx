@@ -42,7 +42,7 @@ const View = () => {
                     <strong>Note Last Updated :</strong> <br />{formatDateToCustom(data.createdAt)}
                 </Typography>
                 <Typography gutterBottom variant="p" component="div" sx={{
-                    color: 'text.secondary', padding: 2
+                    color: 'text.secondary', padding: 2,   whiteSpace: 'pre-line'
                 }}>
                     {data.content}
                 </Typography>
