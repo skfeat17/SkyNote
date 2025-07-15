@@ -188,7 +188,7 @@ const Notes = () => {
                     </Typography>
                   </CardContent>
                   <CardActions sx={{ justifyContent: 'space-between', px: 2 }}>
-                    <div className="time">{formatDateToCustom(data.createdAt)}</div>
+                    <div className="time"><p>{formatDateToCustom(data.createdAt)}</p></div>
                     <Stack direction="row" spacing={1}>
                   <Tooltip title="View">
                     <Button
