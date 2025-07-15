@@ -125,7 +125,7 @@ const Notes = () => {
   
     hours = hours % 12 || 12;
   
-    return `${day} ${monthName} ${year}, ${hours}:${minutes} ${ampm}`;
+    return `${hours}:${minutes} ${ampm} ${day} ${monthName} ${year.slice(2)}`;
   }
   
 
