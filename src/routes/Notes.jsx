@@ -47,8 +47,12 @@ const Notes = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setNotes((data.notes).reverse());
-        setFilteredNotes((data.notes).reverse());
+         const sorted = data.notes.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  setNotes(sorted);
+  setFilteredNotes(sorted);
       } else {
         throw new Error(data.message || 'Failed to fetch notes');
       }
