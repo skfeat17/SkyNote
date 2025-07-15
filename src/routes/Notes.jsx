@@ -105,7 +105,7 @@ const Notes = () => {
       if (res.ok && data.success) {
         setSnackbar({ open: true, message: 'Note deleted successfully!', severity: 'success' });
         setDeleteId(null);
-        fetchNotes(); zz
+        fetchNotes(); 
       } else {
         throw new Error(data.message || 'Failed to delete note');
       }
