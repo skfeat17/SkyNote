@@ -47,8 +47,8 @@ const Notes = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setNotes(data.notes);
-        setFilteredNotes(data.notes);
+        setNotes((data.notes).reverse());
+        setFilteredNotes((data.notes).reverse());
       } else {
         throw new Error(data.message || 'Failed to fetch notes');
       }
@@ -125,7 +125,7 @@ const Notes = () => {
   
     hours = hours % 12 || 12;
   
-    return `${hours}:${minutes} ${ampm} ${day} ${monthName} ${year}`;
+    return `${hours}:${minutes} ${ampm} ${day} ${monthName} ${year.toString().slice(2,4)}`;
   }
   
 
@@ -147,88 +147,115 @@ const Notes = () => {
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 2, width: '100%' }}>
-        {loading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} height={180} variant="rectangular" />
-            ))
-          : filteredNotes.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 30, textAlign: 'center' }}>
-                No Notes Exist
+  {loading
+    ? Array.from({ length: 5 }).map((_, i) => (
+        <Skeleton key={i} height={180} variant="rectangular" />
+      ))
+    : filteredNotes.length === 0 ? (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 30, textAlign: 'center' }}>
+          No Notes Exist
+        </Typography>
+      ) : (
+        filteredNotes.map((data) => (
+          <Card
+            key={data.id}
+            sx={{
+              width: '100%',
+              minHeight: 180,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              borderRadius: 1,
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'text.secondary',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  WebkitLineClamp: 1,
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  fontSize: '1.2rem',
+                  fontWeight:'bold'
+                }}
+              >
+                {data.title}
               </Typography>
-            ) : (
-              filteredNotes.map((data) => (
-                <Card key={data.id} sx={{ width: '100%', minHeight: 180 }}>
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: 'text.secondary',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        WebkitLineClamp: 1,
-                        display: '-webkit-box',
-                        WebkitBoxOrient: 'vertical',
-                      }}
-                    >
-                      {data.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'text.secondary',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        WebkitLineClamp: 2,
-                        display: '-webkit-box',
-                        WebkitBoxOrient: 'vertical',
-                        whiteSpace: 'pre-line'
-                      }}
-                    >
-                      {data.content}
-                    </Typography>
-                  </CardContent>
-                  <CardActions sx={{ justifyContent: 'space-between', px: 2 }}>
-                    <div className="time"><p>{formatDateToCustom(data.createdAt)}</p></div>
-                    <Stack direction="row" spacing={1}>
-                  <Tooltip title="View">
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="primary"
-                                    onClick={() => navigate('/view', { state: data })}
-                      sx={{ minWidth: 10, p: 0.8 }}
-                    >
-                      <VisibilityIcon fontSize="small" />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Edit">
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="info"
-                     onClick={() => navigate('/edit', { state: data })}
-                      sx={{ minWidth: 10, p: 0.8 }}
-                    >
-                      <EditIcon fontSize="small" />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="error"
-                            onClick={() => setDeleteId(data.id)}
-                      sx={{ minWidth: 10, p: 0.8 }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </Button>
-                  </Tooltip>
-                </Stack>
-                  </CardActions>
-                </Card>
-              ))
-            )}
-      </Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  WebkitLineClamp: 2,
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  whiteSpace: 'pre-line',
+                  fontSize: '1.1rem',
+                }}
+              >
+                {data.content}
+              </Typography>
+            </CardContent>
+
+            <CardActions
+              sx={{
+                mt: 'auto',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                px: 2,
+                pb: 1,
+              }}
+            >
+              <Typography variant="caption" color="text.secondary" fontSize={"1rem"}>
+                {formatDateToCustom(data.createdAt)}
+              </Typography>
+
+              <Stack direction="row" spacing={1}>
+                <Tooltip title="View">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate('/view', { state: data })}
+                    sx={{ minWidth: 10, p: 0.8 }}
+                  >
+                    <VisibilityIcon fontSize="small" />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Edit">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="info"
+                    onClick={() => navigate('/edit', { state: data })}
+                    sx={{ minWidth: 10, p: 0.8 }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    onClick={() => setDeleteId(data.id)}
+                    sx={{ minWidth: 10, p: 0.8 }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </Button>
+                </Tooltip>
+              </Stack>
+            </CardActions>
+          </Card>
+        ))
+      )}
+</Box>
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteId} onClose={() => !deleting && setDeleteId(null)}>
